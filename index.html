@@ -595,6 +595,10 @@
             <h3 id="title-unit2">單元二：結束時間</h3>
             <p id="desc-opt2">練習根據開始時間與活動經歷的小時數，計算活動的結束時間。</p>
           </div>
+          <div class="card" onclick="startQuiz('unit3')">
+            <h3 id="title-unit3">單元三：開始時間(指針式時鐘)</h3>
+            <p id="desc-opt3">練習根據結束時間與活動經歷的時間，推算活動的開始時間。</p>
+          </div>
         </div>
       </div>
 
@@ -635,6 +639,20 @@
                 <span id="u2-lbl-hour">時</span>
                 <input type="text" id="u2-min-input" class="number-input-box" maxlength="2" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="分" onkeydown="onInputKeyDown(event)">
                 <span id="u2-lbl-min">分結束。</span>
+              </div>
+
+              <!-- 單元三輸入框 (開始時間 - 動態顯示 AM/PM選單、小時、分鐘) -->
+              <div id="u3-input-area" class="answer-input-container hidden">
+                <span id="u3-prompt-prefix"></span>
+                <select id="u3-period-select" class="text-select hidden">
+                  <option value="">-- 請選擇 --</option>
+                  <option value="am">上午</option>
+                  <option value="pm">下午</option>
+                </select>
+                <input type="text" id="u3-hour-input" class="number-input-box" maxlength="2" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="時" onkeydown="onInputKeyDown(event)">
+                <span id="u3-lbl-hour">時</span>
+                <input type="text" id="u3-min-input" class="number-input-box" maxlength="2" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="分" onkeydown="onInputKeyDown(event)">
+                <span id="u3-lbl-min">分開始。</span>
               </div>
             </div>
 
@@ -733,10 +751,13 @@
         homeSubtitle: "請選擇學習單元",
         titleUnit1: "單元一：時間間隔",
         titleUnit2: "單元二：結束時間",
+        titleUnit3: "單元三：開始時間(指針式時鐘)",
         descOpt1: "練習根據開始與結束時間，計算活動經歷的時間間隔（小時）。",
         descOpt2: "練習根據開始時間與活動經歷的小時數，計算活動的結束時間。",
+        descOpt3: "練習根據結束時間與活動經歷的時間，推算活動的開始時間。",
         unit1: "單元一：時間間隔",
         unit2: "單元二：結束時間",
+        unit3: "單元三：開始時間(指針式時鐘)",
         qProgress: "題目",
         questionLabel: "第 {n} 題",
         ansLabel: "答案",
@@ -776,10 +797,13 @@
         homeSubtitle: "Please Select a Learning Unit",
         titleUnit1: "Unit 1: Time Interval",
         titleUnit2: "Unit 2: End Time",
+        titleUnit3: "Unit 3: Start Time (Analog Clock)",
         descOpt1: "Practice calculating time interval (hours) given start and end time.",
         descOpt2: "Practice calculating end time given start time and duration in hours.",
+        descOpt3: "Practice calculating start time given end time and duration.",
         unit1: "Unit 1: Time Interval",
         unit2: "Unit 2: End Time",
+        unit3: "Unit 3: Start Time (Analog Clock)",
         qProgress: "Question",
         questionLabel: "Q{n}",
         ansLabel: "Ans",
@@ -851,6 +875,22 @@
       { zh_prefix: "曉晴參加游泳特別訓練，訓練時間是 {d} 小時。", zh_suffix: "訓練結束的時間是", en_prefix: "Hiu Ching joined swimming training for {d} hours.", en_suffix: "Training completed at" }
     ];
 
+    const SCENARIOS_U3_HOURS = [
+      { zh_prefix: "芷晴上舞蹈班用了 {d} 小時。", zh_suffix: "芷晴在", zh_post: "開始上舞蹈班。", en_prefix: "Tsz Ching attended dance class for {d} hours.", en_suffix: "Tsz Ching started at", en_post: "." },
+      { zh_prefix: "嘉欣睡了 {d} 小時。", zh_suffix: "嘉欣在", zh_post: "開始睡覺。", en_prefix: "Ka Yan slept for {d} hours.", en_suffix: "Ka Yan started sleeping at", en_post: "." },
+      { zh_prefix: "梓軒在圖書館看了 {d} 小時書。", zh_suffix: "梓軒在", zh_post: "開始看書。", en_prefix: "Tsz Hin read in library for {d} hours.", en_suffix: "Tsz Hin started reading at", en_post: "." },
+      { zh_prefix: "樂晴練習鋼琴用了 {d} 小時。", zh_suffix: "樂晴在", zh_post: "開始練習鋼琴。", en_prefix: "Lok Ching practiced piano for {d} hours.", en_suffix: "Lok Ching started at", en_post: "." },
+      { zh_prefix: "浩軒做運動進行了 {d} 小時。", zh_suffix: "浩軒在", zh_post: "開始做運動。", en_prefix: "Ho Hin exercised for {d} hours.", en_suffix: "Ho Hin started at", en_post: "." }
+    ];
+
+    const SCENARIOS_U3_MINS = [
+      { zh_prefix: "子朗玩陀螺用了 {d} 分鐘。", zh_suffix: "子朗在", zh_post: "開始玩陀螺。", en_prefix: "Tsz Long played spinning top for {d} minutes.", en_suffix: "Tsz Long started at", en_post: "." },
+      { zh_prefix: "卓賢溜滑梯用了 {d} 分鐘。", zh_suffix: "卓賢在", zh_post: "開始溜滑梯。", en_prefix: "Cheuk Yin played on slide for {d} minutes.", en_suffix: "Cheuk Yin started at", en_post: "." },
+      { zh_prefix: "思捷做拉筋運動用了 {d} 分鐘。", zh_suffix: "思捷在", zh_post: "開始做拉筋運動。", en_prefix: "Sze Chit stretched for {d} minutes.", en_suffix: "Sze Chit started at", en_post: "." },
+      { zh_prefix: "曉晴做溫習練習用了 {d} 分鐘。", zh_suffix: "曉晴在", zh_post: "開始溫習。", en_prefix: "Hiu Ching studied for {d} minutes.", en_suffix: "Hiu Ching started at", en_post: "." },
+      { zh_prefix: "詠琪跳繩進行了 {d} 分鐘。", zh_suffix: "詠琪在", zh_post: "開始跳繩。", en_prefix: "Wing Ki skipped rope for {d} minutes.", en_suffix: "Wing Ki started at", en_post: "." }
+    ];
+
     function shuffleArray(arr) {
       const array = [...arr];
       for (let i = array.length - 1; i > 0; i--) {
@@ -860,61 +900,97 @@
       return array;
     }
 
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function getRandomChoice(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
     // 產生單元一題目 (時間間隔)
     function generateUnit1Questions() {
       const result = [];
       const scenarios = shuffleArray([...SCENARIOS_U1]);
-      let sIdx = 0;
 
-      // 1. Easy Digital 1 (AM -> AM, non-crossing)
+      // 1. Easy Q1 (Digital, Same AM/PM)
+      const q1Diff = getRandomInt(2, 4);
+      const q1Start = getRandomInt(1, 11 - q1Diff);
+      const q1Min = getRandomChoice([15, 30, 45]);
       result.push({
-        unit: 1, tier: 'easy', clockType: 'digital', crossPeriod: false,
-        startPeriod: 'a.m.', endPeriod: 'a.m.', startH: 8, endH: 11, min: 15, diff: 3, scenario: scenarios[sIdx++]
+        unit: 1, tier: 'easy', format: 'digital', startH: q1Start, endH: q1Start + q1Diff, min: q1Min, diff: q1Diff, crossPeriod: false, startPeriod: 'p.m.', endPeriod: 'p.m.', scenario: scenarios[0]
       });
-      // 2. Easy Digital 2 (PM -> PM, non-crossing)
+
+      // 2. Easy Q2 (Digital, Same AM/PM)
+      const q2Diff = getRandomInt(2, 4);
+      const q2Start = getRandomInt(8, 11 - q2Diff);
+      const q2Min = getRandomChoice([10, 20, 50]);
       result.push({
-        unit: 1, tier: 'easy', clockType: 'digital', crossPeriod: false,
-        startPeriod: 'p.m.', endPeriod: 'p.m.', startH: 1, endH: 4, min: 30, diff: 3, scenario: scenarios[sIdx++]
+        unit: 1, tier: 'easy', format: 'digital', startH: q2Start, endH: q2Start + q2Diff, min: q2Min, diff: q2Diff, crossPeriod: false, startPeriod: 'a.m.', endPeriod: 'a.m.', scenario: scenarios[1]
       });
-      // 3. Easy Analog 1 (AM -> AM, non-crossing)
+
+      // 3. Easy Q3 (Analog, Same AM/PM)
+      const q3Diff = getRandomInt(1, 3);
+      const q3Start = getRandomInt(8, 11 - q3Diff);
+      const q3Min = getRandomChoice([10, 15, 25]);
       result.push({
-        unit: 1, tier: 'easy', clockType: 'analog', crossPeriod: false,
-        startPeriod: 'a.m.', endPeriod: 'a.m.', startH: 9, endH: 11, min: 20, diff: 2, scenario: scenarios[sIdx++]
+        unit: 1, tier: 'easy', format: 'analog', startH: q3Start, endH: q3Start + q3Diff, min: q3Min, diff: q3Diff, crossPeriod: false, startPeriod: 'a.m.', endPeriod: 'a.m.', scenario: scenarios[2]
       });
-      // 4. Easy Analog 2 (PM -> PM, non-crossing)
+
+      // 4. Easy Q4 (Analog, Same AM/PM)
+      const q4Diff = getRandomInt(2, 4);
+      const q4Start = getRandomInt(1, 11 - q4Diff);
+      const q4Min = getRandomChoice([20, 30, 40]);
       result.push({
-        unit: 1, tier: 'easy', clockType: 'analog', crossPeriod: false,
-        startPeriod: 'p.m.', endPeriod: 'p.m.', startH: 2, endH: 5, min: 45, diff: 3, scenario: scenarios[sIdx++]
+        unit: 1, tier: 'easy', format: 'analog', startH: q4Start, endH: q4Start + q4Diff, min: q4Min, diff: q4Diff, crossPeriod: false, startPeriod: 'p.m.', endPeriod: 'p.m.', scenario: scenarios[3]
       });
-      // 5. Medium Digital 1 (AM -> PM, MUST cross 12:00 noon)
+
+      // 5. Medium Q5 (Digital, MUST cross Noon)
+      const m5Start = getRandomChoice([8, 9, 10, 11]);
+      const m5Diff = getRandomInt(13 - m5Start, 5);
+      const m5Min = getRandomChoice([15, 30, 52]);
       result.push({
-        unit: 1, tier: 'medium', clockType: 'digital', crossPeriod: true,
-        startPeriod: 'a.m.', endPeriod: 'p.m.', startH: 9, endH: 4, min: 52, diff: 7, scenario: scenarios[sIdx++]
+        unit: 1, tier: 'medium', format: 'digital', startH: m5Start, endH: m5Start + m5Diff - 12, min: m5Min, diff: m5Diff, crossPeriod: true, startPeriod: 'a.m.', endPeriod: 'p.m.', scenario: scenarios[4]
       });
-      // 6. Medium Digital 2 (AM -> PM, MUST cross 12:00 noon)
+
+      // 6. Medium Q6 (Digital, MUST cross Noon)
+      const m6Start = getRandomChoice([9, 10, 11]);
+      const m6Diff = getRandomInt(13 - m6Start, 5);
+      const m6Min = getRandomChoice([10, 25, 40]);
       result.push({
-        unit: 1, tier: 'medium', clockType: 'digital', crossPeriod: true,
-        startPeriod: 'a.m.', endPeriod: 'p.m.', startH: 10, endH: 2, min: 15, diff: 4, scenario: scenarios[sIdx++]
+        unit: 1, tier: 'medium', format: 'digital', startH: m6Start, endH: m6Start + m6Diff - 12, min: m6Min, diff: m6Diff, crossPeriod: true, startPeriod: 'a.m.', endPeriod: 'p.m.', scenario: scenarios[5]
       });
-      // 7. Medium Digital 3 (AM -> PM, MUST cross 12:00 noon)
+
+      // 7. Medium Q7 (Digital, MUST cross Noon)
+      const m7Start = getRandomChoice([10, 11]);
+      const m7Diff = getRandomInt(13 - m7Start, 4);
+      const m7Min = getRandomChoice([15, 35, 45]);
       result.push({
-        unit: 1, tier: 'medium', clockType: 'digital', crossPeriod: true,
-        startPeriod: 'a.m.', endPeriod: 'p.m.', startH: 11, endH: 3, min: 30, diff: 4, scenario: scenarios[sIdx++]
+        unit: 1, tier: 'medium', format: 'digital', startH: m7Start, endH: m7Start + m7Diff - 12, min: m7Min, diff: m7Diff, crossPeriod: true, startPeriod: 'a.m.', endPeriod: 'p.m.', scenario: scenarios[6]
       });
-      // 8. Hard Analog 1 (AM -> PM, MUST cross 12:00 noon)
+
+      // 8. Hard Q8 (Analog, MUST cross Noon)
+      const h8Start = getRandomChoice([10, 11]);
+      const h8Diff = getRandomInt(13 - h8Start, 4);
+      const h8Min = getRandomChoice([15, 25, 45]);
       result.push({
-        unit: 1, tier: 'hard', clockType: 'analog', crossPeriod: true,
-        startPeriod: 'a.m.', endPeriod: 'p.m.', startH: 10, endH: 1, min: 25, diff: 3, scenario: scenarios[sIdx++]
+        unit: 1, tier: 'hard', format: 'analog', startH: h8Start, endH: h8Start + h8Diff - 12, min: h8Min, diff: h8Diff, crossPeriod: true, startPeriod: 'a.m.', endPeriod: 'p.m.', scenario: scenarios[7]
       });
-      // 9. Hard Analog 2 (AM -> PM, MUST cross 12:00 noon)
+
+      // 9. Hard Q9 (Analog, MUST cross Noon)
+      const h9Start = getRandomChoice([9, 10]);
+      const h9Diff = getRandomInt(13 - h9Start, 5);
+      const h9Min = getRandomChoice([20, 40, 50]);
       result.push({
-        unit: 1, tier: 'hard', clockType: 'analog', crossPeriod: true,
-        startPeriod: 'a.m.', endPeriod: 'p.m.', startH: 9, endH: 2, min: 10, diff: 5, scenario: scenarios[sIdx++]
+        unit: 1, tier: 'hard', format: 'analog', startH: h9Start, endH: h9Start + h9Diff - 12, min: h9Min, diff: h9Diff, crossPeriod: true, startPeriod: 'a.m.', endPeriod: 'p.m.', scenario: scenarios[8]
       });
-      // 10. Hard Analog 3 (AM -> PM, MUST cross 12:00 noon)
+
+      // 10. Hard Q10 (Analog, MUST cross Noon)
+      const h10Start = getRandomChoice([10, 11]);
+      const h10Diff = getRandomInt(13 - h10Start, 5);
+      const h10Min = getRandomChoice([15, 30, 50]);
       result.push({
-        unit: 1, tier: 'hard', clockType: 'analog', crossPeriod: true,
-        startPeriod: 'a.m.', endPeriod: 'p.m.', startH: 11, endH: 4, min: 5, diff: 5, scenario: scenarios[sIdx++]
+        unit: 1, tier: 'hard', format: 'analog', startH: h10Start, endH: h10Start + h10Diff - 12, min: h10Min, diff: h10Diff, crossPeriod: true, startPeriod: 'a.m.', endPeriod: 'p.m.', scenario: scenarios[9]
       });
 
       return result;
@@ -924,75 +1000,348 @@
     function generateUnit2Questions() {
       const result = [];
       const scenarios = shuffleArray([...SCENARIOS_U2]);
-      let sIdx = 0;
 
-      // 1. Easy Digital 1 (AM -> AM, non-crossing)
+      // 1. Easy Q1 (Digital, Non-crossing)
+      const q1Diff = getRandomInt(1, 3);
+      const q1Start = getRandomInt(1, 11 - q1Diff);
+      const q1Min = getRandomChoice([15, 30, 45]);
       result.push({
-        unit: 2, tier: 'easy', clockType: 'digital', crossPeriod: false,
-        startPeriod: 'am', endPeriod: 'am', startH: 8, endH: 11, min: 40, diff: 3, scenario: scenarios[sIdx++]
+        unit: 2, tier: 'easy', format: 'digital', startH: q1Start, min: q1Min, diff: q1Diff, endH: q1Start + q1Diff, endM: q1Min, crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenarios[0]
       });
-      // 2. Easy Digital 2 (PM -> PM, non-crossing)
+
+      // 2. Easy Q2 (Digital, Non-crossing)
+      const q2Diff = getRandomInt(1, 3);
+      const q2Start = getRandomInt(8, 11 - q2Diff);
+      const q2Min = getRandomChoice([10, 20, 40]);
       result.push({
-        unit: 2, tier: 'easy', clockType: 'digital', crossPeriod: false,
-        startPeriod: 'pm', endPeriod: 'pm', startH: 1, endH: 3, min: 30, diff: 2, scenario: scenarios[sIdx++]
+        unit: 2, tier: 'easy', format: 'digital', startH: q2Start, min: q2Min, diff: q2Diff, endH: q2Start + q2Diff, endM: q2Min, crossPeriod: false, startPeriod: 'am', endPeriod: 'am', scenario: scenarios[1]
       });
-      // 3. Easy Analog 1 (AM -> AM, non-crossing)
+
+      // 3. Easy Q3 (Analog, Non-crossing)
+      const q3Diff = getRandomInt(2, 4);
+      const q3Start = getRandomInt(1, 11 - q3Diff);
+      const q3Min = getRandomChoice([10, 15, 25]);
       result.push({
-        unit: 2, tier: 'easy', clockType: 'analog', crossPeriod: false,
-        startPeriod: 'am', endPeriod: 'am', startH: 9, endH: 11, min: 30, diff: 2, scenario: scenarios[sIdx++]
+        unit: 2, tier: 'easy', format: 'analog', startH: q3Start, min: q3Min, diff: q3Diff, endH: q3Start + q3Diff, endM: q3Min, crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenarios[2]
       });
-      // 4. Easy Analog 2 (PM -> PM, non-crossing)
+
+      // 4. Easy Q4 (Analog, Non-crossing)
+      const q4Diff = getRandomInt(2, 3);
+      const q4Start = getRandomInt(8, 11 - q4Diff);
+      const q4Min = getRandomChoice([15, 20, 30]);
       result.push({
-        unit: 2, tier: 'easy', clockType: 'analog', crossPeriod: false,
-        startPeriod: 'pm', endPeriod: 'pm', startH: 2, endH: 5, min: 15, diff: 3, scenario: scenarios[sIdx++]
+        unit: 2, tier: 'easy', format: 'analog', startH: q4Start, min: q4Min, diff: q4Diff, endH: q4Start + q4Diff, endM: q4Min, crossPeriod: false, startPeriod: 'am', endPeriod: 'am', scenario: scenarios[3]
       });
-      // 5. Medium Digital 1 (AM -> PM, MUST cross 12:00 noon)
+
+      // 5. Medium Q5 (Digital, MUST cross Noon)
+      const m5Start = getRandomChoice([8, 9, 10, 11]);
+      const m5Diff = getRandomInt(13 - m5Start, 5);
+      const m5Min = getRandomChoice([9, 15, 30]);
       result.push({
-        unit: 2, tier: 'medium', clockType: 'digital', crossPeriod: true,
-        startPeriod: 'am', endPeriod: 'pm', startH: 9, endH: 1, min: 9, diff: 4, scenario: scenarios[sIdx++]
+        unit: 2, tier: 'medium', format: 'digital', startH: m5Start, min: m5Min, diff: m5Diff, endH: m5Start + m5Diff - 12, endM: m5Min, crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenarios[4]
       });
-      // 6. Medium Digital 2 (AM -> PM, MUST cross 12:00 noon)
+
+      // 6. Medium Q6 (Digital, MUST cross Noon)
+      const m6Start = getRandomChoice([9, 10, 11]);
+      const m6Diff = getRandomInt(13 - m6Start, 4);
+      const m6Min = getRandomChoice([10, 20, 45]);
       result.push({
-        unit: 2, tier: 'medium', clockType: 'digital', crossPeriod: true,
-        startPeriod: 'am', endPeriod: 'pm', startH: 10, endH: 1, min: 20, diff: 3, scenario: scenarios[sIdx++]
+        unit: 2, tier: 'medium', format: 'digital', startH: m6Start, min: m6Min, diff: m6Diff, endH: m6Start + m6Diff - 12, endM: m6Min, crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenarios[5]
       });
-      // 7. Medium Digital 3 (AM -> PM, MUST cross 12:00 noon)
+
+      // 7. Medium Q7 (Digital, MUST cross Noon)
+      const m7Start = getRandomChoice([10, 11]);
+      const m7Diff = getRandomInt(13 - m7Start, 4);
+      const m7Min = getRandomChoice([15, 30, 45]);
       result.push({
-        unit: 2, tier: 'medium', clockType: 'digital', crossPeriod: true,
-        startPeriod: 'am', endPeriod: 'pm', startH: 11, endH: 3, min: 15, diff: 4, scenario: scenarios[sIdx++]
+        unit: 2, tier: 'medium', format: 'digital', startH: m7Start, min: m7Min, diff: m7Diff, endH: m7Start + m7Diff - 12, endM: m7Min, crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenarios[6]
       });
-      // 8. Hard Analog 1 (AM -> PM, MUST cross 12:00 noon)
+
+      // 8. Hard Q8 (Analog, MUST cross Noon)
+      const h8Start = getRandomChoice([10, 11]);
+      const h8Diff = getRandomInt(13 - h8Start, 4);
+      const h8Min = getRandomChoice([15, 35, 45]);
       result.push({
-        unit: 2, tier: 'hard', clockType: 'analog', crossPeriod: true,
-        startPeriod: 'am', endPeriod: 'pm', startH: 10, endH: 1, min: 45, diff: 3, scenario: scenarios[sIdx++]
+        unit: 2, tier: 'hard', format: 'analog', startH: h8Start, min: h8Min, diff: h8Diff, endH: h8Start + h8Diff - 12, endM: h8Min, crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenarios[7]
       });
-      // 9. Hard Analog 2 (AM -> PM, MUST cross 12:00 noon)
+
+      // 9. Hard Q9 (Analog, MUST cross Noon)
+      const h9Start = getRandomChoice([9, 10, 11]);
+      const h9Diff = getRandomInt(13 - h9Start, 5);
+      const h9Min = getRandomChoice([10, 25, 40]);
       result.push({
-        unit: 2, tier: 'hard', clockType: 'analog', crossPeriod: true,
-        startPeriod: 'am', endPeriod: 'pm', startH: 9, endH: 2, min: 50, diff: 5, scenario: scenarios[sIdx++]
+        unit: 2, tier: 'hard', format: 'analog', startH: h9Start, min: h9Min, diff: h9Diff, endH: h9Start + h9Diff - 12, endM: h9Min, crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenarios[8]
       });
-      // 10. Hard Analog 3 (AM -> PM, MUST cross 12:00 noon)
+
+      // 10. Hard Q10 (Analog, MUST cross Noon)
+      const h10Start = getRandomChoice([9, 10]);
+      const h10Diff = getRandomInt(13 - h10Start, 5);
+      const h10Min = getRandomChoice([15, 35, 50]);
       result.push({
-        unit: 2, tier: 'hard', clockType: 'analog', crossPeriod: true,
-        startPeriod: 'am', endPeriod: 'pm', startH: 11, endH: 3, min: 10, diff: 4, scenario: scenarios[sIdx++]
+        unit: 2, tier: 'hard', format: 'analog', startH: h10Start, min: h10Min, diff: h10Diff, endH: h10Start + h10Diff - 12, endM: h10Min, crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenarios[9]
       });
 
       return result;
     }
 
-    function createDigitalClockHTML(hour, minute, period, isUnknown = false) {
-      if (isUnknown) {
-        return `
-          <div class="digital-clock-item unknown">
-            <span class="digital-clock-unknown-mark">?</span>
-          </div>
-        `;
+    // 產生單元三題目 (開始時間 - 指針時鐘)
+    function generateUnit3Questions() {
+      const result = [];
+      const scenariosH = shuffleArray([...SCENARIOS_U3_HOURS]);
+      const scenariosM = shuffleArray([...SCENARIOS_U3_MINS]);
+
+      // 1. Easy Q1 (Whole hours, non-crossing AM/PM)
+      const q1Diff = getRandomInt(1, 4);
+      const q1StartH = getRandomInt(1, 11 - q1Diff);
+      result.push({
+        unit: 3, tier: 'easy', type: 'hours', startH: q1StartH, startM: 0, endH: q1StartH + q1Diff, endM: 0, diff: q1Diff, diffUnit: 'hours', crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenariosH[0]
+      });
+
+      // 2. Easy Q2 (Whole hours, non-crossing AM/PM)
+      const q2Diff = getRandomInt(2, 4);
+      const q2StartH = getRandomInt(1, 11 - q2Diff);
+      result.push({
+        unit: 3, tier: 'easy', type: 'hours', startH: q2StartH, startM: 0, endH: q2StartH + q2Diff, endM: 0, diff: q2Diff, diffUnit: 'hours', crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenariosH[1]
+      });
+
+      // 3. Easy Q3 (Minutes, same hour)
+      const q3Diff = getRandomChoice([10, 15, 20, 25]);
+      const q3StartM = getRandomChoice([5, 10, 15, 20]);
+      const q3H = getRandomInt(1, 11);
+      result.push({
+        unit: 3, tier: 'easy', type: 'mins', startH: q3H, startM: q3StartM, endH: q3H, endM: q3StartM + q3Diff, diff: q3Diff, diffUnit: 'mins', crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenariosM[0]
+      });
+
+      // 4. Easy Q4 (Minutes, same hour)
+      const q4Diff = getRandomChoice([10, 15, 20, 25, 30]);
+      const q4StartM = getRandomChoice([5, 10, 15, 20, 25]);
+      const q4H = getRandomInt(1, 11);
+      result.push({
+        unit: 3, tier: 'easy', type: 'mins', startH: q4H, startM: q4StartM, endH: q4H, endM: q4StartM + q4Diff, diff: q4Diff, diffUnit: 'mins', crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenariosM[1]
+      });
+
+      // 5. Medium Q5 (Whole hours, MUST cross AM/PM)
+      const m5StartH = getRandomChoice([8, 9, 10, 11]);
+      const m5Diff = getRandomInt(13 - m5StartH, 5);
+      const m5M = getRandomChoice([0, 15, 30]);
+      result.push({
+        unit: 3, tier: 'medium', type: 'hours', startH: m5StartH, startM: m5M, endH: m5StartH + m5Diff - 12, endM: m5M, diff: m5Diff, diffUnit: 'hours', crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenariosH[2]
+      });
+
+      // 6. Medium Q6 (Whole hours, MUST cross AM/PM)
+      const m6StartH = getRandomChoice([9, 10, 11]);
+      const m6Diff = getRandomInt(13 - m6StartH, 4);
+      const m6M = getRandomChoice([0, 15, 45]);
+      result.push({
+        unit: 3, tier: 'medium', type: 'hours', startH: m6StartH, startM: m6M, endH: m6StartH + m6Diff - 12, endM: m6M, diff: m6Diff, diffUnit: 'hours', crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenariosH[3]
+      });
+
+      // 7. Medium Q7 (Whole hours, MUST cross AM/PM)
+      const m7StartH = getRandomChoice([10, 11]);
+      const m7Diff = getRandomInt(13 - m7StartH, 4);
+      const m7M = getRandomChoice([0, 20, 30]);
+      result.push({
+        unit: 3, tier: 'medium', type: 'hours', startH: m7StartH, startM: m7M, endH: m7StartH + m7Diff - 12, endM: m7M, diff: m7Diff, diffUnit: 'hours', crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenariosH[4]
+      });
+
+      // 8. Hard Q8 (Minutes, MUST cross hour boundary)
+      const h8StartM = getRandomChoice([35, 40, 45, 50]);
+      const h8DiffOptions = [15, 20, 25, 30, 35, 40].filter(d => h8StartM + d >= 60);
+      const h8Diff = getRandomChoice(h8DiffOptions);
+      const h8StartH = getRandomInt(1, 11);
+      result.push({
+        unit: 3, tier: 'hard', type: 'mins', startH: h8StartH, startM: h8StartM, endH: (h8StartH % 12) + 1, endM: (h8StartM + h8Diff) % 60, diff: h8Diff, diffUnit: 'mins', crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenariosM[2]
+      });
+
+      // 9. Hard Q9 (Minutes, MUST cross hour boundary)
+      const h9StartM = getRandomChoice([35, 40, 45, 50]);
+      const h9DiffOptions = [20, 25, 30, 35, 40].filter(d => h9StartM + d >= 60);
+      const h9Diff = getRandomChoice(h9DiffOptions);
+      const h9StartH = getRandomInt(1, 11);
+      result.push({
+        unit: 3, tier: 'hard', type: 'mins', startH: h9StartH, startM: h9StartM, endH: (h9StartH % 12) + 1, endM: (h9StartM + h9Diff) % 60, diff: h9Diff, diffUnit: 'mins', crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenariosM[3]
+      });
+
+      // 10. Hard Q10 (Minutes, MUST cross hour boundary)
+      const h10StartM = getRandomChoice([40, 45, 50, 55]);
+      const h10DiffOptions = [15, 20, 25, 30, 35].filter(d => h10StartM + d >= 60);
+      const h10Diff = getRandomChoice(h10DiffOptions);
+      const h10StartH = getRandomInt(1, 11);
+      result.push({
+        unit: 3, tier: 'hard', type: 'mins', startH: h10StartH, startM: h10StartM, endH: (h10StartH % 12) + 1, endM: (h10StartM + h10Diff) % 60, diff: h10Diff, diffUnit: 'mins', crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenariosM[4]
+      });
+
+      return result;
+    }
+
+    // 產生單元二題目 (結束時間)
+    function generateUnit2Questions() {
+      const result = [];
+      const scenarios = shuffleArray([...SCENARIOS_U2]);
+      const usedKeys = new Set();
+
+      // 1. Easy Q1 & Q2 (Digital, Non-crossing)
+      for (let i = 0; i < 2; i++) {
+        let diff, startH, min, key;
+        do {
+          diff = getRandomInt(1, 4);
+          startH = getRandomInt(1, 11 - diff);
+          min = getRandomChoice([0, 15, 30, 45]);
+          key = `u2_easy_d_${startH}_${diff}_${min}`;
+        } while (usedKeys.has(key));
+        usedKeys.add(key);
+
+        const period = getRandomChoice(['am', 'pm']);
+        const realStartH = period === 'am' ? getRandomInt(8, 11 - diff) : getRandomInt(1, 11 - diff);
+        result.push({
+          unit: 2, tier: 'easy', format: 'digital', startH: realStartH, min: min, diff: diff, endH: realStartH + diff, endM: min, crossPeriod: false, startPeriod: period, endPeriod: period, scenario: scenarios[i]
+        });
       }
-      const minStr = String(minute).padStart(2, '0');
+
+      // 2. Easy Q3 & Q4 (Analog, Non-crossing)
+      for (let i = 2; i < 4; i++) {
+        let diff, startH, min, key;
+        do {
+          diff = getRandomInt(1, 4);
+          startH = getRandomInt(1, 11 - diff);
+          min = getRandomChoice([0, 15, 30, 45]);
+          key = `u2_easy_a_${startH}_${diff}_${min}`;
+        } while (usedKeys.has(key));
+        usedKeys.add(key);
+
+        const period = getRandomChoice(['am', 'pm']);
+        const realStartH = period === 'am' ? getRandomInt(8, 11 - diff) : getRandomInt(1, 11 - diff);
+        result.push({
+          unit: 2, tier: 'easy', format: 'analog', startH: realStartH, min: min, diff: diff, endH: realStartH + diff, endM: min, crossPeriod: false, startPeriod: period, endPeriod: period, scenario: scenarios[i]
+        });
+      }
+
+      // 3. Medium Q5, Q6, Q7 (Digital, MUST cross Noon)
+      for (let i = 4; i < 7; i++) {
+        let startH, diff, min, key;
+        do {
+          startH = getRandomChoice([8, 9, 10, 11]);
+          diff = getRandomInt(13 - startH, 5);
+          min = getRandomChoice([0, 15, 30, 45]);
+          key = `u2_med_d_${startH}_${diff}_${min}`;
+        } while (usedKeys.has(key));
+        usedKeys.add(key);
+
+        result.push({
+          unit: 2, tier: 'medium', format: 'digital', startH: startH, min: min, diff: diff, endH: startH + diff - 12, endM: min, crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenarios[i]
+        });
+      }
+
+      // 4. Hard Q8, Q9, Q10 (Analog, MUST cross Noon)
+      for (let i = 7; i < 10; i++) {
+        let startH, diff, min, key;
+        do {
+          startH = getRandomChoice([8, 9, 10, 11]);
+          diff = getRandomInt(13 - startH, 5);
+          min = getRandomChoice([0, 15, 30, 45]);
+          key = `u2_hard_a_${startH}_${diff}_${min}`;
+        } while (usedKeys.has(key));
+        usedKeys.add(key);
+
+        result.push({
+          unit: 2, tier: 'hard', format: 'analog', startH: startH, min: min, diff: diff, endH: startH + diff - 12, endM: min, crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenarios[i]
+        });
+      }
+
+      return result;
+    }
+
+    // 產生單元三題目 (開始時間 - 指針時鐘)
+    function generateUnit3Questions() {
+      const result = [];
+      const scenariosH = shuffleArray([...SCENARIOS_U3_HOURS]);
+      const scenariosM = shuffleArray([...SCENARIOS_U3_MINS]);
+      const usedKeys = new Set();
+
+      // 1. Easy Q1 & Q2 (Whole hours, non-crossing AM/PM)
+      for (let i = 0; i < 2; i++) {
+        let diff, startH, key;
+        do {
+          diff = getRandomInt(1, 4);
+          startH = getRandomInt(1, 11 - diff);
+          key = `u3_easy_h_${startH}_${diff}`;
+        } while (usedKeys.has(key));
+        usedKeys.add(key);
+
+        result.push({
+          unit: 3, tier: 'easy', type: 'hours', startH: startH, startM: 0, endH: startH + diff, endM: 0, diff: diff, diffUnit: 'hours', crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenariosH[i]
+        });
+      }
+
+      // 2. Easy Q3 & Q4 (Minutes, same hour)
+      for (let i = 0; i < 2; i++) {
+        let diff, startM, startH, key;
+        do {
+          diff = getRandomChoice([10, 15, 20, 25, 30]);
+          startM = getRandomChoice([5, 10, 15, 20, 25]);
+          startH = getRandomInt(1, 11);
+          key = `u3_easy_m_${startH}_${startM}_${diff}`;
+        } while (startM + diff >= 60 || usedKeys.has(key));
+        usedKeys.add(key);
+
+        result.push({
+          unit: 3, tier: 'easy', type: 'mins', startH: startH, startM: startM, endH: startH, endM: startM + diff, diff: diff, diffUnit: 'mins', crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenariosM[i]
+        });
+      }
+
+      // 3. Medium Q5, Q6, Q7 (Whole hours, MUST cross AM/PM)
+      for (let i = 2; i < 5; i++) {
+        let startH, diff, startM, key;
+        do {
+          startH = getRandomChoice([8, 9, 10, 11]);
+          diff = getRandomInt(13 - startH, 5);
+          startM = getRandomChoice([0, 15, 30, 45]);
+          key = `u3_med_h_${startH}_${diff}_${startM}`;
+        } while (usedKeys.has(key));
+        usedKeys.add(key);
+
+        const endH = (startH + diff - 12) || 12;
+        result.push({
+          unit: 3, tier: 'medium', type: 'hours', startH: startH, startM: startM, endH: endH, endM: startM, diff: diff, diffUnit: 'hours', crossPeriod: true, startPeriod: 'am', endPeriod: 'pm', scenario: scenariosH[i]
+        });
+      }
+
+      // 4. Hard Q8, Q9, Q10 (Minutes, MUST cross hour boundary)
+      for (let i = 2; i < 5; i++) {
+        let startM, diff, startH, key;
+        do {
+          startM = getRandomChoice([35, 40, 45, 50, 55]);
+          diff = getRandomChoice([15, 20, 25, 30, 35, 40]);
+          startH = getRandomInt(1, 11);
+          key = `u3_hard_m_${startH}_${startM}_${diff}`;
+        } while (startM + diff < 60 || startM + diff >= 120 || usedKeys.has(key));
+        usedKeys.add(key);
+
+        const endM = (startM + diff) % 60;
+        const endH = (startH % 12) + 1;
+        result.push({
+          unit: 3, tier: 'hard', type: 'mins', startH: startH, startM: startM, endH: endH, endM: endM, diff: diff, diffUnit: 'mins', crossPeriod: false, startPeriod: 'pm', endPeriod: 'pm', scenario: scenariosM[i]
+        });
+      }
+
+      return result;
+    }
+
+    // SVG 渲染輔助元件
+    function createDigitalClockSVG(hour, min, period) {
+      const padM = String(min).padStart(2, '0');
       return `
         <div class="digital-clock-item">
-          <span class="digital-clock-text">${hour}:${minStr}</span>
+          <span class="digital-clock-text">${hour}:${padM}</span>
           <span class="digital-clock-period">${period}</span>
+        </div>
+      `;
+    }
+
+    function createUnknownDigitalClockSVG() {
+      return `
+        <div class="digital-clock-item unknown">
+          <span class="digital-clock-unknown-mark">?</span>
         </div>
       `;
     }
@@ -1033,12 +1382,112 @@
       `;
     }
 
+    // 小時逆向倒退圓弧提示圖解 (圖解 4b99c6)
+    function createHourBackwardDiagramSVG(endH, diff) {
+      let arcs = '';
+      for (let i = 0; i < diff; i++) {
+        const fromH = (endH - i + 12) % 12 || 12;
+        const toH = (endH - i - 1 + 12) % 12 || 12;
+
+        const startAngle = (fromH * 30 - 90) * (Math.PI / 180);
+        const endAngle = (toH * 30 - 90) * (Math.PI / 180);
+
+        const r = 76 + (i % 2) * 4;
+        const x1 = 90 + r * Math.cos(startAngle);
+        const y1 = 90 + r * Math.sin(startAngle);
+        const x2 = 90 + r * Math.cos(endAngle);
+        const y2 = 90 + r * Math.sin(endAngle);
+
+        const midAngle = ((fromH - 0.5) * 30 - 90) * (Math.PI / 180);
+        const lx = 90 + (r + 14) * Math.cos(midAngle);
+        const ly = 90 + (r + 14) * Math.sin(midAngle);
+
+        arcs += `
+          <path d="M ${x1} ${y1} A ${r} ${r} 0 0 0 ${x2} ${y2}" fill="none" stroke="#d69e2e" stroke-width="2.5" stroke-dasharray="3 3"/>
+          <text x="${lx}" y="${ly + 4}" font-size="11" font-weight="bold" fill="#b7791f" text-anchor="middle">1 小時</text>
+        `;
+      }
+
+      return `
+        <div style="text-align: center; margin: 10px 0;">
+          <svg width="240" height="240" viewBox="0 0 240 240" style="max-width:100%;">
+            <g transform="translate(30, 30)">
+              <circle cx="90" cy="90" r="86" fill="#fefcbf" />
+              <circle cx="90" cy="90" r="74" fill="#ffffff" stroke="#cbd5e0" stroke-width="2"/>
+              ${Array.from({length:12}, (_, k) => {
+                const i = k + 1;
+                const angle = (i * 30 - 90) * (Math.PI / 180);
+                const x = 90 + 60 * Math.cos(angle);
+                const y = 90 + 60 * Math.sin(angle);
+                return `<text x="${x}" y="${y + 5}" font-size="14" font-weight="bold" text-anchor="middle" fill="#2d3748">${i}</text>`;
+              }).join('')}
+              ${arcs}
+              <line x1="90" y1="90" x2="${90 + 42 * Math.sin(endH * 30 * Math.PI / 180)}" y2="${90 - 42 * Math.cos(endH * 30 * Math.PI / 180)}" stroke="#e53e3e" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="90" cy="90" r="5" fill="#1e293b"/>
+            </g>
+          </svg>
+        </div>
+      `;
+    }
+
+    // 分鐘逆向倒退圓弧提示圖解 (圖解 4b96dd)
+    function createMinuteBackwardDiagramSVG(endM, diff) {
+      const steps = Math.ceil(diff / 5);
+      let arcs = '';
+
+      for (let i = 0; i < steps; i++) {
+        const fromM = (endM - i * 5 + 60) % 60;
+        const toM = (endM - (i + 1) * 5 + 60) % 60;
+
+        const startAngle = (fromM * 6 - 90) * (Math.PI / 180);
+        const endAngle = (toM * 6 - 90) * (Math.PI / 180);
+
+        const r = 76;
+        const x1 = 90 + r * Math.cos(startAngle);
+        const y1 = 90 + r * Math.sin(startAngle);
+        const x2 = 90 + r * Math.cos(endAngle);
+        const y2 = 90 + r * Math.sin(endAngle);
+
+        const midAngle = ((fromM - 2.5) * 6 - 90) * (Math.PI / 180);
+        const lx = 90 + (r + 14) * Math.cos(midAngle);
+        const ly = 90 + (r + 14) * Math.sin(midAngle);
+
+        arcs += `
+          <path d="M ${x1} ${y1} A ${r} ${r} 0 0 0 ${x2} ${y2}" fill="none" stroke="#3182ce" stroke-width="2.5" stroke-dasharray="3 3"/>
+          <text x="${lx}" y="${ly + 4}" font-size="10" font-weight="bold" fill="#2b6cb0" text-anchor="middle">5 小格</text>
+        `;
+      }
+
+      return `
+        <div style="text-align: center; margin: 10px 0;">
+          <svg width="240" height="240" viewBox="0 0 240 240" style="max-width:100%;">
+            <g transform="translate(30, 30)">
+              <circle cx="90" cy="90" r="86" fill="#ebf8ff" />
+              <circle cx="90" cy="90" r="74" fill="#ffffff" stroke="#cbd5e0" stroke-width="2"/>
+              ${Array.from({length:12}, (_, k) => {
+                const i = k + 1;
+                const angle = (i * 30 - 90) * (Math.PI / 180);
+                const x = 90 + 60 * Math.cos(angle);
+                const y = 90 + 60 * Math.sin(angle);
+                return `<text x="${x}" y="${y + 5}" font-size="14" font-weight="bold" text-anchor="middle" fill="#2d3748">${i}</text>`;
+              }).join('')}
+              ${arcs}
+              <line x1="90" y1="90" x2="${90 + 55 * Math.sin(endM * 6 * Math.PI / 180)}" y2="${90 - 55 * Math.cos(endM * 6 * Math.PI / 180)}" stroke="#3182ce" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="90" cy="90" r="5" fill="#1e293b"/>
+            </g>
+          </svg>
+        </div>
+      `;
+    }
+
     function startQuiz(mode) {
       currentMode = mode;
       if (mode === 'unit1') {
         questions = generateUnit1Questions();
-      } else {
+      } else if (mode === 'unit2') {
         questions = generateUnit2Questions();
+      } else {
+        questions = generateUnit3Questions();
       }
       currentQIndex = 0;
       records = [];
@@ -1056,7 +1505,11 @@
       const t = i18n[currentLang];
       const q = questions[currentQIndex];
 
-      document.getElementById('quiz-mode-name').innerText = (currentMode === 'unit1') ? t.unit1 : t.unit2;
+      let unitTitle = t.unit1;
+      if (currentMode === 'unit2') unitTitle = t.unit2;
+      else if (currentMode === 'unit3') unitTitle = t.unit3;
+
+      document.getElementById('quiz-mode-name').innerText = unitTitle;
       document.getElementById('quiz-progress-text').innerText = `${t.qProgress} ${currentQIndex + 1} / ${questions.length}`;
 
       const displayArea = document.getElementById('question-display-area');
@@ -1065,6 +1518,9 @@
       let storyTitleText = "";
       if (currentMode === 'unit1') {
         storyTitleText = (currentLang === 'zh') ? q.scenario.zh_prefix : q.scenario.en_prefix;
+      } else if (currentMode === 'unit2') {
+        const prefixStr = (currentLang === 'zh') ? q.scenario.zh_prefix : q.scenario.en_prefix;
+        storyTitleText = prefixStr.replace('{d}', q.diff);
       } else {
         const prefixStr = (currentLang === 'zh') ? q.scenario.zh_prefix : q.scenario.en_prefix;
         storyTitleText = prefixStr.replace('{d}', q.diff);
@@ -1072,77 +1528,75 @@
 
       let clockContent = '';
       if (currentMode === 'unit1') {
-        if (q.clockType === 'digital') {
-          clockContent = `
-            <div class="time-flow-container">
-              <div class="time-box-wrapper">
-                <span class="time-box-label label-start">${t.startTimeLabel}</span>
-                ${createDigitalClockHTML(q.startH, q.min, q.startPeriod)}
-              </div>
-              <div class="arrow-container">
-                <span class="arrow-icon">➔</span>
-              </div>
-              <div class="time-box-wrapper">
-                <span class="time-box-label label-end">${t.endTimeLabel}</span>
-                ${createDigitalClockHTML(q.endH, q.min, q.endPeriod)}
-              </div>
+        const startClock = q.format === 'digital'
+          ? createDigitalClockSVG(q.startH, q.min, q.startPeriod)
+          : createAnalogClockSVG(q.startH, q.min, "#f6ad55");
+        const endClock = q.format === 'digital'
+          ? createDigitalClockSVG(q.endH, q.min, q.endPeriod)
+          : createAnalogClockSVG(q.endH, q.min, "#38bdf8");
+
+        clockContent = `
+          <div class="time-flow-container">
+            <div class="time-box-wrapper">
+              <span class="time-box-label label-start">${t.startTimeLabel}</span>
+              ${startClock}
             </div>
-          `;
-        } else {
-          clockContent = `
-            <div class="time-flow-container">
-              <div class="time-box-wrapper">
-                <span class="time-box-label label-start">${t.startTimeLabel}</span>
-                ${createAnalogClockSVG(q.startH, q.min, "#0284c7")}
-              </div>
-              <div class="arrow-container">
-                <span class="arrow-icon">➔</span>
-              </div>
-              <div class="time-box-wrapper">
-                <span class="time-box-label label-end">${t.endTimeLabel}</span>
-                ${createAnalogClockSVG(q.endH, q.min, "#38bdf8")}
-              </div>
+            <div class="arrow-container">
+              <span class="arrow-icon">➔</span>
             </div>
-          `;
-        }
-      } else { // Unit 2
+            <div class="time-box-wrapper">
+              <span class="time-box-label label-end">${t.endTimeLabel}</span>
+              ${endClock}
+            </div>
+          </div>
+        `;
+      } else if (currentMode === 'unit2') {
+        const startPeriodText = q.startPeriod === 'am' ? 'a.m.' : 'p.m.';
+        const startClock = q.format === 'digital'
+          ? createDigitalClockSVG(q.startH, q.min, startPeriodText)
+          : createAnalogClockSVG(q.startH, q.min, "#f6ad55");
+        const endClock = q.format === 'digital'
+          ? createUnknownDigitalClockSVG()
+          : createUnknownAnalogClockSVG();
+
         const afterText = (currentLang === 'zh') ? `${q.diff} 小時後` : `${q.diff} hours after`;
-        if (q.clockType === 'digital') {
-          const pLabel = q.startPeriod === 'am' ? 'a.m.' : 'p.m.';
-          clockContent = `
-            <div class="time-flow-container">
-              <div class="time-box-wrapper">
-                <span class="time-box-label label-start">${t.startTimeLabel}</span>
-                ${createDigitalClockHTML(q.startH, q.min, pLabel)}
-              </div>
-              <div class="arrow-container">
-                <span class="duration-badge">${afterText}</span>
-                <span class="arrow-icon">➔</span>
-              </div>
-              <div class="time-box-wrapper">
-                <span class="time-box-label label-end">${t.reachTimeLabel}</span>
-                ${createDigitalClockHTML(q.endH, q.min, '', true)}
-              </div>
+
+        clockContent = `
+          <div class="time-flow-container">
+            <div class="time-box-wrapper">
+              <span class="time-box-label label-start">${t.startTimeLabel}</span>
+              ${startClock}
             </div>
-          `;
-        } else {
-          clockContent = `
-            <div class="time-flow-container">
-              <div class="time-box-wrapper">
-                <span class="time-box-label label-start">${t.startTimeLabel}</span>
-                ${createAnalogClockSVG(q.startH, q.min, "#ed8936")}
-              </div>
-              <div class="arrow-container">
-                <span class="duration-badge">${afterText}</span>
-                <span class="arrow-icon">➔</span>
-              </div>
-              <div class="time-box-wrapper">
-                <span class="time-box-label label-end">${t.reachTimeLabel}</span>
-                ${createUnknownAnalogClockSVG()}
-              </div>
+            <div class="arrow-container">
+              <span class="duration-badge">${afterText}</span>
+              <span class="arrow-icon">➔</span>
             </div>
-          `;
-        }
+            <div class="time-box-wrapper">
+              <span class="time-box-label label-end">${t.reachTimeLabel}</span>
+              ${endClock}
+            </div>
+          </div>
+        `;
+      } else { // Unit 3
+        const unitText = q.diffUnit === 'hours' ? (currentLang === 'zh' ? '小時' : 'hours') : (currentLang === 'zh' ? '分鐘' : 'mins');
+        const afterText = (currentLang === 'zh') ? `${q.diff} ${unitText}後` : `${q.diff} ${unitText} after`;
+
+        clockContent = `
+          <div class="time-flow-container">
+            <div class="time-box-wrapper">
+              <span class="time-box-label label-start">${t.startTimeLabel}</span>
+              ${createUnknownAnalogClockSVG()}
+            </div>
+            <div class="arrow-container">
+              <span class="duration-badge">${afterText}</span>
+              <span class="arrow-icon">➔</span>
+            </div>
+            <div class="time-box-wrapper">
+              <span class="time-box-label label-end">${t.endTimeLabel}</span>
+              ${createAnalogClockSVG(q.endH, q.endM, "#38bdf8")}
+            </div>
+          </div>
+        `;
       }
 
       displayArea.innerHTML = `
@@ -1153,20 +1607,22 @@
       // 切換輸入框區域
       const u1Area = document.getElementById('u1-input-area');
       const u2Area = document.getElementById('u2-input-area');
+      const u3Area = document.getElementById('u3-input-area');
 
       if (currentMode === 'unit1') {
         u1Area.classList.remove('hidden');
         u2Area.classList.add('hidden');
+        u3Area.classList.add('hidden');
         const suffixText = (currentLang === 'zh') ? q.scenario.zh_suffix : q.scenario.en_suffix;
         document.getElementById('u1-prompt-prefix').innerText = suffixText;
         document.getElementById('u1-lbl-hour-unit').innerText = t.hourUnit;
         const hInput = document.getElementById('u1-hour-input');
-        hInput.value = '';
-        hInput.disabled = false;
+        hInput.value = ''; hInput.disabled = false;
         setTimeout(() => hInput.focus(), 50);
-      } else {
+      } else if (currentMode === 'unit2') {
         u1Area.classList.add('hidden');
         u2Area.classList.remove('hidden');
+        u3Area.classList.add('hidden');
         const suffixText = (currentLang === 'zh') ? q.scenario.zh_suffix : q.scenario.en_suffix;
         document.getElementById('u2-prompt-prefix').innerText = suffixText;
         document.getElementById('u2-lbl-hour').innerText = currentLang === 'zh' ? '時' : 'h';
@@ -1175,12 +1631,44 @@
         const pSel = document.getElementById('u2-period-select');
         const hInput = document.getElementById('u2-hour-input');
         const mInput = document.getElementById('u2-min-input');
-
         pSel.value = ''; pSel.disabled = false;
         hInput.value = ''; hInput.disabled = false;
         mInput.value = ''; mInput.disabled = false;
-
         setTimeout(() => hInput.focus(), 50);
+      } else { // Unit 3
+        u1Area.classList.add('hidden');
+        u2Area.classList.add('hidden');
+        u3Area.classList.remove('hidden');
+
+        const suffixText = (currentLang === 'zh') ? q.scenario.zh_suffix : q.scenario.en_suffix;
+        const postText = (currentLang === 'zh') ? q.scenario.zh_post : q.scenario.en_post;
+
+        document.getElementById('u3-prompt-prefix').innerText = suffixText;
+
+        const u3PSel = document.getElementById('u3-period-select');
+        const u3HInput = document.getElementById('u3-hour-input');
+        const u3MInput = document.getElementById('u3-min-input');
+        const u3LblMin = document.getElementById('u3-lbl-min');
+
+        if (q.tier === 'medium' && q.crossPeriod) {
+          u3PSel.classList.remove('hidden');
+        } else {
+          u3PSel.classList.add('hidden');
+        }
+
+        if (q.type === 'hours' && q.startM === 0 && q.tier === 'easy') {
+          u3MInput.classList.add('hidden');
+          u3LblMin.innerText = (currentLang === 'zh') ? `時${postText}` : `h start.`;
+        } else {
+          u3MInput.classList.remove('hidden');
+          u3LblMin.innerText = (currentLang === 'zh') ? `分${postText}` : `m start.`;
+        }
+
+        u3PSel.value = ''; u3PSel.disabled = false;
+        u3HInput.value = ''; u3HInput.disabled = false;
+        u3MInput.value = ''; u3MInput.disabled = false;
+
+        setTimeout(() => u3HInput.focus(), 50);
       }
 
       document.getElementById('feedback-area').classList.add('hidden');
@@ -1201,15 +1689,15 @@
       let formatZeroError = false;
 
       if (currentMode === 'unit1') {
-        const rawVal = document.getElementById('u1-hour-input').value.trim();
-        if (rawVal === '' || isNaN(parseInt(rawVal))) {
+        const val = document.getElementById('u1-hour-input').value.trim();
+        if (val === '' || isNaN(parseInt(val))) {
           alert(currentLang === 'zh' ? "請輸入經歷的小時數字！" : "Please enter the duration in hours!");
           return;
         }
-        const userH = parseInt(rawVal);
-        userAnsDisplay = currentLang === 'zh' ? `${rawVal} 小時` : `${rawVal} hours`;
+        const userH = parseInt(val);
+        userAnsDisplay = `${val} ${t.hourUnit}`;
         isCorrect = (userH === q.diff);
-      } else { // Unit 2
+      } else if (currentMode === 'unit2') {
         const pSel = document.getElementById('u2-period-select').value;
         const rawH = document.getElementById('u2-hour-input').value.trim();
         const rawM = document.getElementById('u2-min-input').value.trim();
@@ -1223,29 +1711,67 @@
           return;
         }
 
-        // 12小時制檢查：小時不可加「0」（例如 4 時寫成 04 時為錯誤）
         if (rawH.length > 1 && rawH.startsWith('0')) {
           formatZeroError = true;
         }
 
-        const pText = pSel === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
-        userAnsDisplay = currentLang === 'zh' ? `${pText} ${rawH} 時 ${rawM} 分` : `${pText} ${rawH}:${rawM}`;
-
         const userH = parseInt(rawH);
         const userM = parseInt(rawM);
+        const pText = pSel === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
 
-        isCorrect = (!formatZeroError && pSel === q.endPeriod && userH === q.endH && userM === q.min);
+        userAnsDisplay = `${pText} ${rawH} 時 ${rawM} 分`;
+        isCorrect = (!formatZeroError && pSel === q.endPeriod && userH === q.endH && userM === q.endM);
+      } else { // Unit 3 Check
+        const rawH = document.getElementById('u3-hour-input').value.trim();
+        const rawM = (q.type === 'hours' && q.startM === 0 && q.tier === 'easy') ? "0" : document.getElementById('u3-min-input').value.trim();
+        const pSel = document.getElementById('u3-period-select').value;
+
+        if (q.tier === 'medium' && q.crossPeriod && !pSel) {
+          alert(currentLang === 'zh' ? "請選擇 上午 或 下午！" : "Please select AM or PM!");
+          return;
+        }
+
+        if (rawH === '' || isNaN(parseInt(rawH)) || (rawM !== '' && isNaN(parseInt(rawM)))) {
+          alert(currentLang === 'zh' ? "請輸入正確的小時與分鐘數字！" : "Please enter valid hour and minute!");
+          return;
+        }
+
+        if (rawH.length > 1 && rawH.startsWith('0')) {
+          formatZeroError = true;
+        }
+
+        const userH = parseInt(rawH);
+        const userM = rawM === '' ? 0 : parseInt(rawM);
+
+        if (q.tier === 'medium' && q.crossPeriod) {
+          const pText = pSel === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
+          userAnsDisplay = `${pText} ${rawH} 時 ${userM} 分`;
+          isCorrect = (!formatZeroError && pSel === q.startPeriod && userH === q.startH && userM === q.startM);
+        } else if (q.type === 'hours' && q.startM === 0 && q.tier === 'easy') {
+          userAnsDisplay = `${rawH} 時`;
+          isCorrect = (!formatZeroError && userH === q.startH);
+        } else {
+          userAnsDisplay = `${rawH} 時 ${userM} 分`;
+          isCorrect = (!formatZeroError && userH === q.startH && userM === q.startM);
+        }
       }
 
       if (!records[currentQIndex]) {
         let targetAnsText = "";
         if (currentMode === 'unit1') {
           targetAnsText = currentLang === 'zh' ? `${q.diff} 小時` : `${q.diff} hours`;
-        } else {
+        } else if (currentMode === 'unit2') {
           const pText = q.endPeriod === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
-          targetAnsText = currentLang === 'zh'
-            ? `${pText} ${q.endH} 時 ${q.min} 分`
-            : `${pText} ${q.endH}:${String(q.min).padStart(2, '0')}`;
+          targetAnsText = currentLang === 'zh' ? `${pText} ${q.endH} 時 ${q.endM} 分` : `${pText} ${q.endH}:${String(q.endM).padStart(2,'0')}`;
+        } else {
+          if (q.tier === 'medium' && q.crossPeriod) {
+            const pText = q.startPeriod === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
+            targetAnsText = `${pText} ${q.startH} 時 ${q.startM} 分`;
+          } else if (q.type === 'hours' && q.startM === 0 && q.tier === 'easy') {
+            targetAnsText = `${q.startH} 時`;
+          } else {
+            targetAnsText = `${q.startH} 時 ${q.startM} 分`;
+          }
         }
 
         records[currentQIndex] = {
@@ -1285,107 +1811,82 @@
           let hintHTML = "";
           if (formatZeroError) {
             hintHTML = currentLang === 'zh'
-              ? `<div><strong>注意：在 12 小時報時制中，小時不可加「0」（例如：4 時不可寫成 04 時）！</strong></div>`
-              : `<div><strong>Note: In 12-hour format, hours must NOT have a leading zero (e.g. write 4, not 04)!</strong></div>`;
+              ? `<div><strong>注意：在 12 小時報時制中，小時不可加「0」（例如：3 時不可寫成 03 時）！</strong></div>`
+              : `<div><strong>Note: In 12-hour format, hours must NOT have a leading zero (e.g. write 3, not 03)!</strong></div>`;
+          } else if (currentMode === 'unit3') {
+            const diagramSVG = q.type === 'hours'
+              ? createHourBackwardDiagramSVG(q.endH, q.diff)
+              : createMinuteBackwardDiagramSVG(q.endM, q.diff);
+
+            if (q.type === 'hours') {
+              hintHTML = currentLang === 'zh' ? `
+                <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+                <div style="margin-top:8px;">
+                  思考方向（倒退減法）：<br>
+                  • <strong>減法算式</strong>：結束小時 減 經歷小時 ➔ ${q.endH} 時 - ${q.diff} 小時 = ？時<br>
+                  • <strong>圖解提示</strong>：觀察時鐘指針逆時針倒退 ${q.diff} 個小時。
+                </div>
+                ${diagramSVG}
+              ` : `
+                <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+                <div style="margin-top:8px;">
+                  Thinking Direction (Counting Backward):<br>
+                  • <strong>Subtraction</strong>: End hour - Duration ➔ ${q.endH} - ${q.diff} = ? hour<br>
+                  • <strong>Diagram Hint</strong>: Observe the clock hands moving counter-clockwise by ${q.diff} hours.
+                </div>
+                ${diagramSVG}
+              `;
+            } else {
+              hintHTML = currentLang === 'zh' ? `
+                <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+                <div style="margin-top:8px;">
+                  思考方向（倒退減法）：<br>
+                  • <strong>減法算式</strong>：結束分鐘 減 經歷分鐘 ➔ ${q.endM} 分 - ${q.diff} 分 = ？分<br>
+                  • <strong>圖解提示</strong>：觀察分針逆時針倒退 ${q.diff} 分鐘（${Math.ceil(q.diff/5)} 個大格）。
+                </div>
+                ${diagramSVG}
+              ` : `
+                <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+                <div style="margin-top:8px;">
+                  Thinking Direction (Counting Backward):<br>
+                  • <strong>Subtraction</strong>: End minute - Duration ➔ ${q.endM} - ${q.diff} = ? mins<br>
+                  • <strong>Diagram Hint</strong>: Observe the minute hand moving counter-clockwise by ${q.diff} mins.
+                </div>
+                ${diagramSVG}
+              `;
+            }
           } else if (currentMode === 'unit1') {
-            if (currentLang === 'zh') {
-              if (q.crossPeriod) {
-                hintHTML = `
-                  <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-                  <div style="margin-top:8px;">
-                    思考方向（加法與減法）：<br>
-                    • <strong>分段思考</strong>：<br>
-                      1. 從開始時間 ${q.startH} 時到正午 12 時：12 時 - ${q.startH} 時 = ？小時<br>
-                      2. 從正午 12 時到結束時間下午 ${q.endH} 時：經過了 ${q.endH} 小時<br>
-                      3. 把兩段的小時加起來 ➔ ？小時 + ${q.endH} 小時 = ？小時。<br>
-                    • <strong>24小時報時制減法</strong>：把下午 ${q.endH} 時換算成 24 小時制（${q.endH + 12} 時），再計算 ${q.endH + 12} 時 - ${q.startH} 時 = ？小時。
-                  </div>
-                `;
-              } else {
-                hintHTML = `
-                  <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-                  <div style="margin-top:8px;">
-                    思考方向（加法與減法）：<br>
-                    • <strong>減法思考</strong>：結束的小時 減 開始的小時 ➔ ${q.endH} 時 - ${q.startH} 時 = ？小時。<br>
-                    • <strong>加法思考</strong>：從開始的小時數順著數到結束的小時 ➔ ${q.startH} 時 + ？小時 = ${q.endH} 時。
-                  </div>
-                `;
-              }
-            } else { // English
-              if (q.crossPeriod) {
-                hintHTML = `
-                  <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-                  <div style="margin-top:8px;">
-                    Thinking Direction (Addition & Subtraction):<br>
-                    • <strong>Step-by-step</strong>:<br>
-                      1. From start time ${q.startH}:00 to 12:00 noon: 12 - ${q.startH} = ? hours<br>
-                      2. From 12:00 noon to end time ${q.endH}:00 p.m.: ${q.endH} hours passed<br>
-                      3. Add both durations ➔ ? hours + ${q.endH} hours = ? hours.<br>
-                    • <strong>24-hour Subtraction</strong>: Convert ${q.endH}:00 p.m. to 24-hour time (${q.endH + 12}:00), then calculate ${q.endH + 12} - ${q.startH} = ? hours.
-                  </div>
-                `;
-              } else {
-                hintHTML = `
-                  <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-                  <div style="margin-top:8px;">
-                    Thinking Direction (Addition & Subtraction):<br>
-                    • <strong>Subtraction</strong>: End hour - Start hour ➔ ${q.endH} - ${q.startH} = ? hours.<br>
-                    • <strong>Addition</strong>: Count forward from start hour to end hour ➔ ${q.startH} + ? hours = ${q.endH}.
-                  </div>
-                `;
-              }
-            }
+            hintHTML = currentLang === 'zh' ? `
+              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+              <div style="margin-top:8px;">
+                思考方向（加法與減法）：<br>
+                • <strong>減法思考</strong>：結束小時 減 開始小時 ➔ ${q.endH} 時 - ${q.startH} 時 = ？小時<br>
+                • <strong>加法思考</strong>：開始時間 ${q.startH} 時，加上多少小時會等於結束時間 ${q.endH} 時？
+              </div>
+            ` : `
+              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+              <div style="margin-top:8px;">
+                Thinking Direction:<br>
+                • <strong>Subtraction</strong>: End hour - Start hour ➔ ${q.endH} - ${q.startH} = ? hours<br>
+                • <strong>Addition</strong>: Start hour ${q.startH} + ? hours = End hour ${q.endH}
+              </div>
+            `;
           } else { // Unit 2
-            const startPText = q.startPeriod === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
-            if (currentLang === 'zh') {
-              if (q.crossPeriod) {
-                hintHTML = `
-                  <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-                  <div style="margin-top:8px;">
-                    思考方向（加法）：<br>
-                    1. 從 ${startPText} ${q.startH} 時加上 ${q.diff} 小時，會跨越正午 12 時。<br>
-                    2. 分段計算：從 ${q.startH} 時到正午 12 時需 ${12 - q.startH} 小時，剩下的 ${q.diff} - ${12 - q.startH} 小時推算至下午？時。<br>
-                    3. 注意：時段會由「上午」轉為「下午」，分鐘維持 ${q.min} 分！<br>
-                    • <strong>注意格式</strong>：在 12 小時制中，小時不可加「0」（例如：4 時不可寫成 04 時）！
-                  </div>
-                `;
-              } else {
-                hintHTML = `
-                  <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-                  <div style="margin-top:8px;">
-                    思考方向（加法與減法）：<br>
-                    • <strong>加法思考</strong>：開始的小時 加上 經歷的小時 ➔ ${q.startH} 時 + ${q.diff} 小時 = ？時。<br>
-                    • <strong>倒數減法驗證</strong>：結束的小時 減去 ${q.diff} 小時 應等於 開始的小時（${q.startH} 時）。<br>
-                    • 提示：未跨越正午，時段維持「${startPText}」，分鐘維持 ${q.min} 分！<br>
-                    • <strong>注意格式</strong>：在 12 小時制中，小時不可加「0」（例如：4 時不可寫成 04 時）！
-                  </div>
-                `;
-              }
-            } else { // English
-              if (q.crossPeriod) {
-                hintHTML = `
-                  <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-                  <div style="margin-top:8px;">
-                    Thinking Direction (Addition):<br>
-                    1. Adding ${q.diff} hours from ${startPText} ${q.startH}:00 will cross 12:00 noon.<br>
-                    2. Step-by-step: From ${q.startH}:00 to 12:00 noon takes ${12 - q.startH} hours. The remaining ${q.diff} - ${12 - q.startH} hours count into p.m.<br>
-                    3. Note: The period changes from a.m. to p.m., while minutes stay ${q.min} min!<br>
-                    • <strong>Format note</strong>: In 12-hour system, do NOT add a leading zero to the hour (e.g. write 4, not 04)!
-                  </div>
-                `;
-              } else {
-                hintHTML = `
-                  <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
-                  <div style="margin-top:8px;">
-                    Thinking Direction (Addition & Subtraction):<br>
-                    • <strong>Addition</strong>: Start hour + Duration ➔ ${q.startH} + ${q.diff} hours = ? hour.<br>
-                    • <strong>Subtraction check</strong>: End hour - ${q.diff} hours should equal start hour (${q.startH}).<br>
-                    • Hint: Does not cross noon, period stays "${startPText}", minutes stay ${q.min} min!<br>
-                    • <strong>Format note</strong>: In 12-hour system, do NOT add a leading zero to the hour (e.g. write 4, not 04)!
-                  </div>
-                `;
-              }
-            }
+            hintHTML = currentLang === 'zh' ? `
+              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+              <div style="margin-top:8px;">
+                思考方向（加法與減法）：<br>
+                • <strong>加法思考</strong>：開始小時 加上 經歷小時 ➔ ${q.startH} 時 + ${q.diff} 小時 = ？時<br>
+                • <strong>時段判斷</strong>：注意是否跨越了正午 12 時。
+              </div>
+            ` : `
+              <div><strong>${t.encourage[Math.floor(Math.random() * t.encourage.length)]}</strong></div>
+              <div style="margin-top:8px;">
+                Thinking Direction:<br>
+                • <strong>Addition</strong>: Start hour + Duration ➔ ${q.startH} + ${q.diff} = ? hour<br>
+                • <strong>Period Check</strong>: Watch whether the time crosses 12:00 noon.
+              </div>
+            `;
           }
 
           feedback.className = "feedback-box feedback-warning";
@@ -1393,138 +1894,132 @@
           feedback.classList.remove('hidden');
 
           // 清空輸入欄讓學生再嘗試一次
-          if (currentMode === 'unit1') {
-            const hInput = document.getElementById('u1-hour-input');
-            hInput.value = '';
+          if (currentMode === 'unit3') {
+            const hInput = document.getElementById('u3-hour-input');
+            const mInput = document.getElementById('u3-min-input');
+            hInput.value = ''; mInput.value = '';
             hInput.focus();
+          } else if (currentMode === 'unit1') {
+            const hInput = document.getElementById('u1-hour-input');
+            hInput.value = ''; hInput.focus();
           } else {
             const hInput = document.getElementById('u2-hour-input');
             const mInput = document.getElementById('u2-min-input');
-            hInput.value = '';
-            mInput.value = '';
+            hInput.value = ''; mInput.value = '';
             hInput.focus();
           }
         } else {
           // 連續答錯2次，給出完整答案與步驟
           let explainHTML = "";
-          if (currentMode === 'unit1') {
-            const startPText = q.startPeriod === 'a.m.' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
-            const endPText = q.endPeriod === 'a.m.' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
-            if (currentLang === 'zh') {
+          if (currentMode === 'unit3') {
+            if (q.type === 'hours') {
               if (q.crossPeriod) {
-                const hTo12 = 12 - q.startH;
-                const hFrom12 = q.endH;
-                explainHTML = `
+                const pText = q.startPeriod === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
+                explainHTML = currentLang === 'zh' ? `
                   <div><strong>${t.stepTitle}</strong></div>
                   <div style="margin-top:8px;">
-                    解題說明：開始時間為 ${startPText} ${q.startH} 時 ${q.min} 分，結束時間為 ${endPText} ${q.endH} 時 ${q.min} 分。<br>
-                    <strong>【方法一：分段計算】</strong><br>
-                    • 由 ${startPText} ${q.startH} 時至 12:00 正午（減法）：12 - ${q.startH} = ${hTo12} 小時<br>
-                    • 由 12:00 正午 至 ${endPText} ${q.endH} 時：經過 ${hFrom12} 小時<br>
-                    • 總時間（加法）：${hTo12} + ${hFrom12} = <strong style='color:#e53e3e; font-size:1.2rem;'>${q.diff} 小時</strong><br><br>
-                    <strong>【方法二：24小時報時制減法】</strong><br>
-                    • 結束時間換算為 24 小時制為 ${q.endH + 12}:${String(q.min).padStart(2,'0')}<br>
-                    • 減法算式：${q.endH + 12} - ${q.startH} = <strong style='color:#e53e3e; font-size:1.2rem;'>${q.diff} 小時</strong>。
+                    解題說明：結束時間為 ${q.endH} 時 ${q.endM} 分，經歷了 ${q.diff} 小時。<br>
+                    <strong>【倒退減法算式】</strong>：<br>
+                    1. 結束時間推算回 12:00 正午：經過了 ${q.endH} 小時<br>
+                    2. 剩下要倒退的小時數：${q.diff} - ${q.endH} = ${q.diff - q.endH} 小時<br>
+                    3. 由 12:00 往前倒退 ${q.diff - q.endH} 小時 ➔ 12 - ${q.diff - q.endH} = ${q.startH} 時<br>
+                    跨越正午，時段由「下午」轉為「上午」。<br>
+                    開始時間為 <strong style='color:#e53e3e; font-size:1.2rem;'>${pText} ${q.startH} 時 ${q.startM} 分</strong>。
+                  </div>
+                ` : `
+                  <div><strong>${t.stepTitle}</strong></div>
+                  <div style="margin-top:8px;">
+                    Explanation: End time is ${q.endH}:${String(q.endM).padStart(2,'0')}, duration is ${q.diff} hours.<br>
+                    Start time is <strong style='color:#e53e3e; font-size:1.2rem;'>${pText} ${q.startH}:${String(q.startM).padStart(2,'0')}</strong>.
                   </div>
                 `;
               } else {
-                explainHTML = `
+                explainHTML = currentLang === 'zh' ? `
                   <div><strong>${t.stepTitle}</strong></div>
                   <div style="margin-top:8px;">
-                    解題說明：開始時間為 ${startPText} ${q.startH} 時 ${q.min} 分，結束時間為 ${endPText} ${q.endH} 時 ${q.min} 分。<br>
-                    <strong>【減法算式】</strong>：結束小時 - 開始小時 = ${q.endH} - ${q.startH} = <strong style='color:#e53e3e; font-size:1.2rem;'>${q.diff} 小時</strong><br>
-                    <strong>【加法驗證】</strong>：開始小時 + 活動時間 = ${q.startH} + ${q.diff} = ${q.endH} 時。
+                    解題說明：結束時間為 ${q.endH} 時，經歷了 ${q.diff} 小時。<br>
+                    <strong>【減法算式】</strong>：${q.endH} - ${q.diff} = ${q.startH}<br>
+                    開始時間為 <strong style='color:#e53e3e; font-size:1.2rem;'>${q.startH} 時</strong>。
+                  </div>
+                ` : `
+                  <div><strong>${t.stepTitle}</strong></div>
+                  <div style="margin-top:8px;">
+                    Explanation: End time is ${q.endH}:00, duration is ${q.diff} hours.<br>
+                    <strong>【Subtraction】</strong>: ${q.endH} - ${q.diff} = ${q.startH}<br>
+                    Start time is <strong style='color:#e53e3e; font-size:1.2rem;'>${q.startH}:00</strong>.
                   </div>
                 `;
               }
-            } else { // English
-              if (q.crossPeriod) {
-                const hTo12 = 12 - q.startH;
-                const hFrom12 = q.endH;
-                explainHTML = `
+            } else { // mins
+              if (q.tier === 'hard') {
+                explainHTML = currentLang === 'zh' ? `
                   <div><strong>${t.stepTitle}</strong></div>
                   <div style="margin-top:8px;">
-                    Explanation: Start time is ${startPText} ${q.startH}:${String(q.min).padStart(2,'0')}, End time is ${endPText} ${q.endH}:${String(q.min).padStart(2,'0')}.<br>
-                    <strong>【Method 1: Step-by-step】</strong><br>
-                    • From ${startPText} ${q.startH}:00 to 12:00 noon (Subtraction): 12 - ${q.startH} = ${hTo12} hours<br>
-                    • From 12:00 noon to ${endPText} ${q.endH}:00: ${hFrom12} hours passed<br>
-                    • Total duration (Addition): ${hTo12} + ${hFrom12} = <strong style='color:#e53e3e; font-size:1.2rem;'>${q.diff} hours</strong><br><br>
-                    <strong>【Method 2: 24-hour Time Subtraction】</strong><br>
-                    • End time in 24-hour format: ${q.endH + 12}:${String(q.min).padStart(2,'0')}<br>
-                    • Subtraction: ${q.endH + 12} - ${q.startH} = <strong style='color:#e53e3e; font-size:1.2rem;'>${q.diff} hours</strong>.
+                    解題說明：結束時間為 ${q.endH} 時 ${q.endM} 分，經歷了 ${q.diff} 分鐘。<br>
+                    <strong>【分段減法算式】</strong>：<br>
+                    1. 倒退回到整點（${q.endH} 時 00 分）：退後了 ${q.endM} 分鐘<br>
+                    2. 尚需倒退的分鐘數：${q.diff} - ${q.endM} = ${q.diff - q.endM} 分鐘<br>
+                    3. 從 60 分鐘減去 ${q.diff - q.endM} 分鐘：60 - ${q.diff - q.endM} = ${q.startM} 分<br>
+                    小時倒退 1 小時 ➔ ${q.startH} 時。<br>
+                    開始時間為 <strong style='color:#e53e3e; font-size:1.2rem;'>${q.startH} 時 ${q.startM} 分</strong>。
+                  </div>
+                ` : `
+                  <div><strong>${t.stepTitle}</strong></div>
+                  <div style="margin-top:8px;">
+                    Explanation: End time is ${q.endH}:${String(q.endM).padStart(2,'0')}, duration is ${q.diff} mins.<br>
+                    Start time is <strong style='color:#e53e3e; font-size:1.2rem;'>${q.startH}:${String(q.startM).padStart(2,'0')}</strong>.
                   </div>
                 `;
               } else {
-                explainHTML = `
+                explainHTML = currentLang === 'zh' ? `
                   <div><strong>${t.stepTitle}</strong></div>
                   <div style="margin-top:8px;">
-                    Explanation: Start time is ${startPText} ${q.startH}:${String(q.min).padStart(2,'0')}, End time is ${endPText} ${q.endH}:${String(q.min).padStart(2,'0')}.<br>
-                    <strong>【Subtraction】</strong>: End hour - Start hour = ${q.endH} - ${q.startH} = <strong style='color:#e53e3e; font-size:1.2rem;'>${q.diff} hours</strong><br>
-                    <strong>【Addition Check】</strong>: Start hour + Duration = ${q.startH} + ${q.diff} = ${q.endH}.
+                    解題說明：結束時間為 ${q.endH} 時 ${q.endM} 分，經歷了 ${q.diff} 分鐘。<br>
+                    <strong>【減法算式】</strong>：${q.endM} - ${q.diff} = ${q.startM}<br>
+                    未跨越小時，小時維持 ${q.startH} 時。<br>
+                    開始時間為 <strong style='color:#e53e3e; font-size:1.2rem;'>${q.startH} 時 ${q.startM} 分</strong>。
+                  </div>
+                ` : `
+                  <div><strong>${t.stepTitle}</strong></div>
+                  <div style="margin-top:8px;">
+                    Explanation: End time is ${q.endH}:${String(q.endM).padStart(2,'0')}, duration is ${q.diff} mins.<br>
+                    <strong>【Subtraction】</strong>: ${q.endM} - ${q.diff} = ${q.startM}<br>
+                    Start time is <strong style='color:#e53e3e; font-size:1.2rem;'>${q.startH}:${String(q.startM).padStart(2,'0')}</strong>.
                   </div>
                 `;
               }
             }
+          } else if (currentMode === 'unit1') {
+            explainHTML = currentLang === 'zh' ? `
+              <div><strong>${t.stepTitle}</strong></div>
+              <div style="margin-top:8px;">
+                解題說明：從 ${q.startH} 時 到 ${q.endH} 時。<br>
+                <strong>【減法算式】</strong>：${q.endH} - ${q.startH} = ${q.diff}<br>
+                經歷的時間間隔為 <strong style='color:#e53e3e; font-size:1.2rem;'>${q.diff} 小時</strong>。
+              </div>
+            ` : `
+              <div><strong>${t.stepTitle}</strong></div>
+              <div style="margin-top:8px;">
+                Explanation: From ${q.startH}:00 to ${q.endH}:00.<br>
+                <strong>【Subtraction】</strong>: ${q.endH} - ${q.startH} = ${q.diff}<br>
+                Time interval is <strong style='color:#e53e3e; font-size:1.2rem;'>${q.diff} hours</strong>.
+              </div>
+            `;
           } else { // Unit 2
-            const startPText = q.startPeriod === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
-            const endPText = q.endPeriod === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
-            if (currentLang === 'zh') {
-              if (q.crossPeriod) {
-                const hTo12 = 12 - q.startH;
-                const hFrom12 = q.diff - hTo12;
-                explainHTML = `
-                  <div><strong>${t.stepTitle}</strong></div>
-                  <div style="margin-top:8px;">
-                    解題說明：開始時間為 ${startPText} ${q.startH} 時 ${q.min} 分，經歷了 ${q.diff} 小時。<br>
-                    <strong>【分段加法算式】</strong>：<br>
-                    1. 由 ${startPText} ${q.startH} 時至 12:00 正午：使用了 12 - ${q.startH} = ${hTo12} 小時<br>
-                    2. 剩下的小時數：${q.diff} - ${hTo12} = ${hFrom12} 小時<br>
-                    3. 由正午 12:00 往後推算 ${hFrom12} 小時 ➔ 下午 ${hFrom12} 時<br>
-                    結束時間為 <strong style='color:#e53e3e; font-size:1.2rem;'>${endPText} ${q.endH} 時 ${q.min} 分</strong>。<br>
-                    （注意：12 小時制的小時不需補 0，應寫「${q.endH} 時」）。
-                  </div>
-                `;
-              } else {
-                explainHTML = `
-                  <div><strong>${t.stepTitle}</strong></div>
-                  <div style="margin-top:8px;">
-                    解題說明：開始時間為 ${startPText} ${q.startH} 時 ${q.min} 分，經歷了 ${q.diff} 小時。<br>
-                    <strong>【加法算式】</strong>：${q.startH} + ${q.diff} = ${q.endH}<br>
-                    未跨越正午，時段維持 ${endPText}，分鐘維持 ${q.min} 分。<br>
-                    結束時間為 <strong style='color:#e53e3e; font-size:1.2rem;'>${endPText} ${q.endH} 時 ${q.min} 分</strong>。<br>
-                    （注意：12 小時制的小時不需補 0，應寫「${q.endH} 時」而非「0${q.endH} 時」）。
-                  </div>
-                `;
-              }
-            } else { // English
-              if (q.crossPeriod) {
-                const hTo12 = 12 - q.startH;
-                const hFrom12 = q.diff - hTo12;
-                explainHTML = `
-                  <div><strong>${t.stepTitle}</strong></div>
-                  <div style="margin-top:8px;">
-                    Explanation: Start time is ${startPText} ${q.startH}:${String(q.min).padStart(2,'0')}, duration is ${q.diff} hours.<br>
-                    <strong>【Step-by-step Addition】</strong>:<br>
-                    1. From ${startPText} ${q.startH}:00 to 12:00 noon: used 12 - ${q.startH} = ${hTo12} hours<br>
-                    2. Remaining hours: ${q.diff} - ${hTo12} = ${hFrom12} hours<br>
-                    3. Counting forward from 12:00 noon by ${hFrom12} hours ➔ ${endPText} ${hFrom12}:00<br>
-                    End time is <strong style='color:#e53e3e; font-size:1.2rem;'>${endPText} ${q.endH}:${String(q.min).padStart(2,'0')}</strong>.<br>
-                    (Note: In 12-hour format, hours do not have a leading zero, write "${q.endH}").
-                  </div>
-                `;
-              } else {
-                explainHTML = `
-                  <div><strong>${t.stepTitle}</strong></div>
-                  <div style="margin-top:8px;">
-                    Explanation: Start time is ${startPText} ${q.startH}:${String(q.min).padStart(2,'0')}, duration is ${q.diff} hours.<br>
-                    <strong>【Addition Calculation】</strong>: ${q.startH} + ${q.diff} = ${q.endH}<br>
-                    Does not cross noon, period stays ${endPText}, minutes stay ${q.min}.<br>
-                    End time is <strong style='color:#e53e3e; font-size:1.2rem;'>${endPText} ${q.endH}:${String(q.min).padStart(2,'0')}</strong>.<br>
-                    (Note: In 12-hour format, hours do not have a leading zero, write "${q.endH}", not "0${q.endH}").
-                  </div>
-                `;
-              }
-            }
+            const pText = q.endPeriod === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
+            explainHTML = currentLang === 'zh' ? `
+              <div><strong>${t.stepTitle}</strong></div>
+              <div style="margin-top:8px;">
+                解題說明：開始時間為 ${q.startH} 時 ${q.endM} 分，經歷了 ${q.diff} 小時。<br>
+                結束時間為 <strong style='color:#e53e3e; font-size:1.2rem;'>${pText} ${q.endH} 時 ${q.endM} 分</strong>。
+              </div>
+            ` : `
+              <div><strong>${t.stepTitle}</strong></div>
+              <div style="margin-top:8px;">
+                Explanation: Start time is ${q.startH}:${String(q.endM).padStart(2,'0')}, duration is ${q.diff} hours.<br>
+                End time is <strong style='color:#e53e3e; font-size:1.2rem;'>${pText} ${q.endH}:${String(q.endM).padStart(2,'0')}</strong>.
+              </div>
+            `;
           }
 
           feedback.className = "feedback-box feedback-danger";
@@ -1536,22 +2031,6 @@
           document.getElementById('btn-next').classList.remove('hidden');
           document.getElementById('btn-next').focus();
         }
-      }
-    }
-
-    function setInputsDisabled(disabled) {
-      document.getElementById('u1-hour-input').disabled = disabled;
-      document.getElementById('u2-period-select').disabled = disabled;
-      document.getElementById('u2-hour-input').disabled = disabled;
-      document.getElementById('u2-min-input').disabled = disabled;
-    }
-
-    function triggerShakeAnimation() {
-      const displayArea = document.getElementById('input-section');
-      if (displayArea) {
-        displayArea.classList.remove('shake-animation');
-        void displayArea.offsetWidth;
-        displayArea.classList.add('shake-animation');
       }
     }
 
@@ -1568,13 +2047,23 @@
       }
     }
 
-    function nextQuestion() {
-      currentQIndex++;
-      if (currentQIndex < questions.length) {
-        loadQuestion();
-      } else {
-        showReport();
+    function triggerShakeAnimation() {
+      const card = document.querySelector('.quiz-card');
+      if (card) {
+        card.classList.remove('shake-animation');
+        void card.offsetWidth;
+        card.classList.add('shake-animation');
       }
+    }
+
+    function setInputsDisabled(disabled) {
+      document.getElementById('u1-hour-input').disabled = disabled;
+      document.getElementById('u2-period-select').disabled = disabled;
+      document.getElementById('u2-hour-input').disabled = disabled;
+      document.getElementById('u2-min-input').disabled = disabled;
+      document.getElementById('u3-period-select').disabled = disabled;
+      document.getElementById('u3-hour-input').disabled = disabled;
+      document.getElementById('u3-min-input').disabled = disabled;
     }
 
     function toggleLanguage() {
@@ -1586,14 +2075,22 @@
       document.getElementById('home-subtitle').innerText = t.homeSubtitle;
       document.getElementById('title-unit1').innerText = t.titleUnit1;
       document.getElementById('title-unit2').innerText = t.titleUnit2;
+      document.getElementById('title-unit3').innerText = t.titleUnit3;
       document.getElementById('desc-opt1').innerText = t.descOpt1;
       document.getElementById('desc-opt2').innerText = t.descOpt2;
+      document.getElementById('desc-opt3').innerText = t.descOpt3;
       document.getElementById('lbl-back-btn').innerText = t.backBtn;
 
       const u2Select = document.getElementById('u2-period-select');
       if (u2Select) {
         u2Select.options[1].text = currentLang === 'zh' ? '上午' : 'a.m.';
         u2Select.options[2].text = currentLang === 'zh' ? '下午' : 'p.m.';
+      }
+
+      const u3Select = document.getElementById('u3-period-select');
+      if (u3Select) {
+        u3Select.options[1].text = currentLang === 'zh' ? '上午' : 'a.m.';
+        u3Select.options[2].text = currentLang === 'zh' ? '下午' : 'p.m.';
       }
 
       const u2LblH = document.getElementById('u2-lbl-hour');
@@ -1629,10 +2126,22 @@
         const startP = q.startPeriod === 'a.m.' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
         const endP = q.endPeriod === 'a.m.' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
         return `${prefix} (${startP} ${q.startH}:${String(q.min).padStart(2,'0')} ➔ ${endP} ${q.endH}:${String(q.min).padStart(2,'0')})`;
-      } else {
+      } else if (currentMode === 'unit2') {
         const prefix = (currentLang === 'zh' ? q.scenario.zh_prefix : q.scenario.en_prefix).replace('{d}', q.diff);
         const startP = q.startPeriod === 'am' ? (currentLang === 'zh' ? '上午' : 'a.m.') : (currentLang === 'zh' ? '下午' : 'p.m.');
         return `${prefix} (${startP} ${q.startH}:${String(q.min).padStart(2,'0')})`;
+      } else {
+        const prefix = (currentLang === 'zh' ? q.scenario.zh_prefix : q.scenario.en_prefix).replace('{d}', q.diff);
+        return `${prefix} (${q.endH}:${String(q.endM).padStart(2,'0')})`;
+      }
+    }
+
+    function nextQuestion() {
+      currentQIndex++;
+      if (currentQIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showReport();
       }
     }
 
@@ -1669,10 +2178,10 @@
       const total = questions.length;
       const accuracyPct = Math.round((correctCount / total) * 100);
 
-      document.getElementById('val-correct-count').innerText = `${correctCount} / ${total}`;
-      document.getElementById('val-accuracy').innerText = `${accuracyPct}%`;
-
-      document.getElementById('report-unit-name').innerText = (currentMode === 'unit1') ? `1. ${t.unit1}` : `2. ${t.unit2}`;
+      let unitTitle = `1. ${t.unit1}`;
+      if (currentMode === 'unit2') unitTitle = `2. ${t.unit2}`;
+      else if (currentMode === 'unit3') unitTitle = `3. ${t.unit3}`;
+      document.getElementById('report-unit-name').innerText = unitTitle;
       document.getElementById('val-unit-mastery').innerText = `${correctCount} / ${total} (${accuracyPct}%)`;
 
       const correctContainer = document.getElementById('correct-list-container');
